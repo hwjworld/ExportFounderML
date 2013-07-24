@@ -1,0 +1,15 @@
+
+请按以下步骤配置
+
+
+1.配置../dao/XinhuanetCMS/config.properties 来源数据库信息
+	url
+	username
+	password
+
+2.配置XinhuanetCMS.ecfg
+	from_articleid=  ---第一次从哪个稿件id开始导,如果全部都导则不填
+	node_ids=115042,115036  ---栏目id，以英文状态逗号分隔
+
+3.保存退出
+4.执行exportFounderML.cmd

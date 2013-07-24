@@ -1,0 +1,11 @@
+请修改以下几点
+
+1.setEnv.sh|setEnv.cmd中的JAVA_HOME
+2.SourceSys/config.xml
+	<sourceDB></sourceDB>	---来源系统
+	<dest-siteid>82</dest-siteid>		---翔宇目标站点ID
+	<xml-save-path>/xml</xml-save-path>	---生成的XML存放位置
+	<att-src-path>/attdata</xml-save-path>	---XML附件存放位置
+
+3.参看doc下相应来源系统的配置说明
+4.启动expFounderML.sh

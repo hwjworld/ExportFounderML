@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FounderEnpML>
+	<Version>2.0.3</Version>
+	<Package>
+		<SourceSystem><![CDATA[#{SourceSystem}]]></SourceSystem>
+		<TargetLib>#{TargetLib}</TargetLib>
+		<ArticleType>#{ArticleType}</ArticleType>
+		<TargetNode><![CDATA[#{TargetNode}]]></TargetNode>
+		<TargetNodeId>#{TargetNodeId}</TargetNodeId>
+		<PublishState>#{PublishState}</PublishState>
+		<ObjectType>#{ObjectType}</ObjectType>
+		<Action>#{Action}</Action>
+		<SiteId>#{SiteId}</SiteId>
+	</Package>
+
+	<Article>
+		<DocID><![CDATA[#{DocID}]]></DocID>
+		<DisplayOrder>#{DisplayOrder}</DisplayOrder>
+		<JabbarMark><![CDATA[#{JabbarMark}]]></JabbarMark>
+		<Introtitle><![CDATA[#{Introtitle}]]></Introtitle>
+		<Subtitle><![CDATA[#{Subtitle}]]></Subtitle>
+		<Abstract><![CDATA[#{Abstract}]]></Abstract>
+		<Attr><![CDATA[63]]></Attr>
+		<WordCount><![CDATA[#{WordCount}]]></WordCount>
+		<Importance><![CDATA[#{Importance}]]></Importance>
+		<keyword><![CDATA[#{keyword}]]></keyword>
+		<piccount><![CDATA[#{piccount}]]></piccount>
+		<Nsdate><![CDATA[#{Nsdate}]]></Nsdate>
+		<Source><![CDATA[#{Source}]]></Source>
+		<SourceUrl><![CDATA[#{SourceUrl}]]></SourceUrl>
+		<Author><![CDATA[#{Author}]]></Author>
+		<Editor><![CDATA[#{Editor}]]></Editor>
+		<Liability><![CDATA[#{Liability}]]></Liability>
+		<Multiattach><![CDATA[#{Multiattach}]]></Multiattach>
+		<Title><![CDATA[#{Title}]]></Title>
+		<LinkTitle><![CDATA[#{LinkTitle}]]></LinkTitle>
+		<RelatedNode><![CDATA[#{RelatedNode}]]></RelatedNode>
+		<RelatedTitle><![CDATA[#{RelatedTitle}]]></RelatedTitle>
+		<Url><![CDATA[#{Url}]]></Url>
+		<hasTitlePic>#{hasTitlePic}</hasTitlePic>
+		<Content><![CDATA[#{Content}]]></Content>
+		<ExpirationTime><![CDATA[2099-12-31]]></ExpirationTime>
+		<IsTop></IsTop>
+		<Attachement>
+			<file type="#{type}" length="#{length}">
+				<filename>#{filename}</filename>
+				<attdesc>#{attdesc}</attdesc>
+				<filecode><![CDATA[#{filecode}]]></filecode>
+				<FileWebPath><![CDATA[#{FileWebPath}]]></FileWebPath>
+				<FilePath><![CDATA[#{FilePath}]]></FilePath>
+			</file>
+		</Attachement>
+	</Article>
+</FounderEnpML>

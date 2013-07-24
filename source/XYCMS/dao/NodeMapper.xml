@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.founder.exportFounderML.nodeMapper">
+
+	<resultMap id="relatedMap" type="relatednode">
+		<result property="linktitle" column="title" />
+		<association property="nodePath" column="nodeid" javaType="string"
+			select="selectNodePath" />
+	</resultMap>
+	
+	<resultMap id="nodeMap" type="node">
+		<result property="TargetNodeId" column="TargetNodeId" />
+		<association property="TargetNode" column="masterid" javaType="string"
+			select="selectNodePath" />
+	</resultMap>
+	
+	<select id="selectNode" parameterType="articleToken" resultMap="nodeMap">
+	<![CDATA[
+	select 0 as TargetNodeId,
+	masterid
+	from releaselib 
+	where articleid=#{articleid}  
+	]]>
+	</select>
+	
+	<select id="selectNodePath" resultType="string">
+	<![CDATA[
+	select LTRIM(MAX(SYS_CONNECT_BY_PATH(nodename, '~'))
+                         KEEP(DENSE_RANK LAST ORDER BY rownum),
+                         ',') AS TargetNode
+              from typestruct
+             start with nodeid =#{nodeid}
+            connect by prior parentid = nodeid
+	]]>
+	</select>
+	
+	<select id="selectRelatedNode" parameterType="articleToken" resultMap="relatedMap">
+	<![CDATA[
+	select *
+	from pagelayout
+	where articleid=#{articleid}
+	and masterid<>nodeid
+	]]>
+	</select>
+	
+	<select id="selectOperation" parameterType="pagelayout" resultType="operation">
+	select 1 as Action,
+	1 as ArticleType,
+	'XYCMS' as SourceSystem,
+	<choose> 
+	    <when test="articleid != null"> 
+	      publishstate as PublishState,
+		  1 as ObjectType,
+	    </when>
+	    <otherwise>
+	      0 as PublishState,
+		  0 as ObjectType,
+	    </otherwise> 
+ 	</choose>
+	2 as TargetLib
+	<if  test="articleid != null">
+		from releaselib
+		where rownum=1
+		and articleid=#{articleid}
+	</if>
+	<if  test="articleid == null">
+		from dual
+	</if>
+	</select>
+	
+</mapper>

@@ -1,0 +1,8 @@
+
+请按以下步骤配置
+
+1.配置DXCNML.ecfg
+	dxcnml_dir= 鼎翔导出的cnml文件所在目录
+
+3.保存退出
+4.执行exportFounderML.cmd

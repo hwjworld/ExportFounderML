@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.founder.exportFounderML.articleMapper">
+	<resultMap id="token" type="articleToken">
+		<result property="articleid" column="articleid" />
+		<result property="nodeid" column="nodeid" />
+	</resultMap>
+
+	<!-- 先用content记录contentid,再次查询,没有linktitle,jabbarmark -->
+	<resultMap id="articleMap" type="article">
+		<result property="Abstract" column="sabstract" />
+		<result property="Attr" column="attr" />
+		<result property="Author" column="author" />
+		<result property="Content" column="contentid" />
+		<result property="DocID" column="articleid" />
+		<result property="Editor" column="editor" />
+		<result property="Importance" column="importance" />
+		<result property="Introtitle" column="introtitle" />
+		<result property="keyword" column="keyword" />
+		<result property="Liability" column="liability" />
+		<result property="Multiattach" column="multiattach" />
+		<result property="Nsdate" column="pubtime" />
+		<result property="piccount" column="piccount" />
+		<result property="piclink" column="piclinks" />
+		<result property="Source" column="sourcename" />
+		<result property="SourceUrl" column="sourceurl" />
+		<result property="Subtitle" column="subtitle" />
+		<result property="Title" column="title" />
+		<result property="Url" column="url" />
+		<result property="WordCount" column="wordcount" />
+		<result property="DisplayOrder" column="DisplayOrder" />
+	</resultMap>
+
+
+	<!-- and nodeid in (${nodeidsstr}) -->
+	<select id="getArticleTokens" parameterType="system.XinhuanetCMS.XinhuanetCMS_condition" resultMap="token">
+	select * from PAGELAYOUT where 1=1 
+	<if test="fromarticleid != null">
+		and articleid>#{fromarticleid}
+	</if>
+	and nodeid in 
+	<foreach item="item" index="0" collection="nodeids"
+		open="(" separator="," close=")">
+		#{item}
+	</foreach>
+	order by articleid asc
+	</select>
+
+	<select id="selectArticleInfo" parameterType="articleToken" resultMap="articleMap">
+	<![CDATA[
+	select * from pagelayout where articleid=#{articleid} and nodeid=#{nodeid}
+	]]>
+	</select>
+	
+	<select id="getArticleClobContent" parameterType="string" resultType="string">
+	<![CDATA[
+	select content from clobcontent where contentid=#{contentid}
+	]]>
+	</select>
+	
+	<select id="getArticleContentstr" parameterType="articleToken" resultType="string">
+	<![CDATA[
+	select contentstr from pagelayout where articleid=#{articleid} and nodeid=#{nodeid}
+	]]>
+	</select>
+</mapper>

@@ -1,0 +1,40 @@
+
+请按以下步骤配置以便进行增量导库
+
+来源数据库信息
+0./dao/XYCMS/config.properties
+	url
+	username
+	password
+1.以cmsuser登录数据库
+2.执行alter table RELEASELIB add doxml number;
+
+数据库方面准备工作完毕，下面执行导数据前操作，以后若还有增量从这里开始操作
+
+3.假设要导id=1000以上的稿件，则执行update releaselib set doxml=0 where articleid>10000
+4.修改dao/XYCMS/ArticleMapper.xml
+	<select id="selectArticleIDS" resultType="string">
+	<![CDATA[
+	select articleid from releaselib where doxml=0 and articleid>123
+	]]>
+	</select>
+	找到上面这段，将123改为10000
+5.保存退出
+6.执行exportFounderML.cmd
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+注释第4条sql语句的要点，根据以下两个条件搜索出待导出稿件
+
+doxml=0
+articleid>123
+
+可参考的修改，意思很明显，相信聪明的你一看就明白 ：D
+	a.articleid>123 and articleid<125
+	b.articleid<200
+	c.articleid>1234556
+	d.articleid in (200,300,124)
+
+要重导某些稿件 ，只需将doxml重新改为0便可，修改语句参考第2点

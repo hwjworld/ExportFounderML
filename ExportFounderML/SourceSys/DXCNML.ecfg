@@ -1,0 +1,2 @@
+#请配置鼎翔导出的cnml文件所在目录
+dxcnml_dir=/program/work/all_test_dir/founderexport/dxcnml

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.founder.exportFounderML.attachmentMapper">
+	<resultMap id="attachmentMap" type="attachment">
+		<result property="attname" column="attpath" />
+		<result property="type" column="type" />
+		<result property="attdesc" column="description" />
+		<association property="fileshape" column="attid" javaType="filepathshape"
+			select="selectAttachmentShape" />
+	</resultMap>
+
+	<resultMap id="piclinkMap" type="attachment">
+		<result property="attname" column="attpath" />
+		<result property="type" column="type" />
+		<association property="fileshape" column="piclinkpath" javaType="filepathshape"
+			select="selectPiclinkShape" />
+	</resultMap>
+	
+	<select id="selectAttachmentIDS" parameterType="articleToken"
+		resultType="string">
+	<![CDATA[
+	select att.attid 
+	from attachement att,articleatt artatt 
+	where att.attid=artatt.attid 
+	and artatt.articleid=#{articleid}
+	]]>
+	</select>
+	
+	<select id="selectAttachment" parameterType="string"
+		resultMap="attachmentMap">
+	<![CDATA[
+	select *
+	from attachement
+	where attid=#{attid}
+	]]>
+	</select>
+	<select id="selectAttachmentShape" parameterType="string"
+		resultType="filepathshape">
+	<![CDATA[
+	select attpath as path
+	from attachement 
+	where attid=#{attid}
+	]]>
+	</select>
+	<select id="selectPiclinkShape" parameterType="string"
+		resultType="filepathshape">
+	<![CDATA[
+	select #{attid} as path
+	from dual
+	]]>
+	</select>
+	<select id="selectPiclink" parameterType="articleToken"
+		resultMap="piclinkMap">
+	select piclinks as attpath,
+	1 as type,
+	piclinks as piclinkpath 
+	from pagelayout
+	where articleid=#{articleid}
+	and nodeid=#{nodeid}
+	</select>
+</mapper>

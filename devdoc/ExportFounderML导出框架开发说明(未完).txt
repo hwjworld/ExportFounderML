@@ -1,0 +1,21 @@
+此框架用以生成FounderML文件，配合ImportDB可用于数据迁移。
+实现了数据库，生成XML等公共部分相应逻辑，只需实现针对不同系统的 取得稿件，附件，正文，标题图片等部分便可导出可供入库的xml。
+数据库层使用mybatis3.0框架实现。
+
+src为框架原代码
+source为来源源代码（需针对不同来源系统开发部分）
+ExportFounderML为导出程序目录
+可将实现后的系统已jar插件形式置于ExportFounderML\SourceSys
+
+以下为开发步骤:
+1.确定数据来源系统名称（英文），如XYCMS。（翔宇cms)
+
+2.以XYCMS为包名，同时创建XYCMS.java，继承system.exportStrategy.AbstractExportStrategy类
+
+3.建立相应token类，一个token标识一篇稿件，也即一个xml。
+	如XYCMSArticleToken.java，类里定义articleid即可表示一篇稿件，若有多个字段标识一篇稿件（如可能需要articleid与nodeid），则建立多个变量。
+
+4.a.若使用数据库，在XYCMS/dao下建立mybatis使用的相应配置言论的（参看xycms和xinhuanetCMS）
+4.b.若不使用数据库，则自己实现相应过程，（参看dxcnml实现）
+
+
