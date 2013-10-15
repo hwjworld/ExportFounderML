@@ -19,3 +19,25 @@ ExportFounderML为导出程序目录
 4.b.若不使用数据库，则自己实现相应过程，（参看dxcnml实现）
 
 
+5.修改config.properties里数据库地址
+　Configuration.xml里修改
+　　<properties resource="TRSWCM/dao/config.properties" />
+　　<typeAlias alias="articleToken" type="TRSWCM.TrsArticleToken" />
+	<mappers>
+		<mapper resource="XinhuanetCMS/dao/ArticleMapper.xml" />
+		<mapper resource="XinhuanetCMS/dao/NodeMapper.xml" />
+		<mapper resource="XinhuanetCMS/dao/AttachmentMapper.xml" />
+	</mappers>
+	
+	设置一次取得的稿件数,在构造方法中实现
+	setWork_page()
+	设置工作线程数，在构造方法中实现
+	setWork_thread(2);
+	
+6.
+	
+
+配置config.xml来源的名字，就是包名。
+
+一些工具方法
+ExportHelper.reverseHierarchy()
