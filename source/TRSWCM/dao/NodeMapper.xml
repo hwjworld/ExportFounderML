@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.founder.exportFounderML.nodeMapper">
+
+	<resultMap id="relatedMap" type="relatednode">
+		<result property="linktitle" column="title" />
+		<association property="nodePath" column="nodeid" javaType="string"
+			select="selectNodePath" />
+	</resultMap>
+	
+	<resultMap id="nodeMap" type="node">
+		<result property="TargetNodeId" column="TargetNodeId" />
+		<result property="TargetNode" column="targetNode" />
+	</resultMap>
+	
+	<select id="selectNode" parameterType="articleToken" resultMap="nodeMap">
+	<![CDATA[
+select 0 as TargetNodeId, c.targetNode as targetNode
+  from wcmchannel a,
+       (select a.hiera || '~' || b.sitedesc as targetNode
+          from (select LTRIM(MAX(SYS_CONNECT_BY_PATH(chnldesc, '~'))
+                             KEEP(DENSE_RANK LAST ORDER BY rownum),
+                             ',') AS hiera
+                  from wcmchannel
+                 start with channelid = replace((select docchannel
+                                           from wcmdocument
+                                          where docid =#{docid} ),'-','')
+                connect by prior parentid = channelid) a,
+               (select sitedesc
+                  from wcmwebsite
+                 where siteid = (select siteid
+                                   from wcmchannel
+                                  where channelid =
+                                        replace((select docchannel
+                                           from wcmdocument
+                                          where docid = #{docid} ),'-',''))) b) c,
+       (select nvl2(docpuburl, '2', '3') as publishstate
+          from wcmdocument
+         where docid = #{docid} ) d
+ where channelid =
+       (select replace(docchannel,'-','') from wcmdocument where docid = #{docid} )
+       
+	]]>
+	</select>
+	
+	<select id="selectNodePath" resultType="string">
+	<![CDATA[
+	select LTRIM(MAX(SYS_CONNECT_BY_PATH(nodename, '~'))
+                         KEEP(DENSE_RANK LAST ORDER BY rownum),
+                         ',') AS TargetNode
+              from typestruct
+             start with nodeid =#{nodeid}
+            connect by prior parentid = nodeid
+	]]>
+	</select>
+	
+	<select id="selectRelatedNode" parameterType="string" resultMap="relatedMap">
+	<![CDATA[
+	select *
+	from pagelayout
+	where articleid=#{articleid}
+	and masterid<>nodeid
+	]]>
+	</select>
+	
+	<select id="selectOperation" parameterType="articleToken" resultType="operation">
+	
+select 1 as Action,1 as ArticleType,
+       'TRSWCM' as sourceSystem,
+       d.publishstate as publishstate,
+      1 as ObjectType,
+       2 as TargetLib
+  from wcmchannel a,
+       (select a.hiera || '~' || b.sitedesc as targetNode
+          from (select LTRIM(MAX(SYS_CONNECT_BY_PATH(chnldesc, '~'))
+                             KEEP(DENSE_RANK LAST ORDER BY rownum),
+                             ',') AS hiera
+                  from wcmchannel
+                 start with channelid = replace((select docchannel
+                                           from wcmdocument
+                                          where docid = #{docid}),'-','')
+                connect by prior parentid = channelid) a,
+               (select sitedesc
+                  from wcmwebsite
+                 where siteid = (select siteid
+                                   from wcmchannel
+                                  where channelid =
+                                        replace((select docchannel
+                                           from wcmdocument
+                                          where docid = #{docid}),'-',''))) b) c,
+       (select nvl2(docpuburl, '2', '3') as publishstate
+          from wcmdocument
+         where docid = #{docid}) d
+ where channelid =
+       (select replace(docchannel,'-','') from wcmdocument where docid = #{docid})
+       	</select>
+	
+</mapper>

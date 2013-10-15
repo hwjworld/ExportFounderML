@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.founder.exportFounderML.attachmentMapper">
+	<resultMap id="attachmentMap" type="attachment">
+		<result property="attname" column="appfile" />
+		<result property="type" column="type" />
+		<result property="attdesc" column="appdesc" />
+		<association property="fileshape" column="appendixid" javaType="filepathshape"
+			select="selectAttachmentShape" />
+	</resultMap>
+
+	<resultMap id="piclinkMap" type="attachment">
+		<result property="attname" column="attpath" />
+		<result property="type" column="type" />
+		<association property="fileshape" column="piclinkpath" javaType="filepathshape"
+			select="selectPiclinkShape" />
+	</resultMap>
+	
+	<select id="selectAttachmentIDS" parameterType="articleToken"
+		resultType="string">
+	<![CDATA[	
+	SELECT appendixid FROM WCMAPPENDIX where appdocid=#{docid}
+	]]>
+	</select>
+	
+	<select id="selectAttachment" parameterType="string"
+		resultMap="attachmentMap">
+	<![CDATA[
+	 select a.*,1 as type from wcmappendix a where appendixid=#{attid}
+	]]>
+	</select>
+	<select id="selectAttachmentShape" parameterType="string"
+		resultType="filepathshape">
+	<![CDATA[
+	select appfile as path
+	from WCMAPPENDIX 
+	where appendixid=#{appendixid}
+	]]>
+	</select>
+	<select id="selectPiclinkShape" parameterType="string"
+		resultType="filepathshape">
+	<![CDATA[
+	select #{attid} as path
+	from dual
+	]]>
+	</select>
+	<select id="selectPiclink" parameterType="articleToken"
+		resultMap="piclinkMap">
+			select appfile as attpath,1 as type,appfile as piclinkpath
+		          from wcmappendix
+		         where appdocid =#{docid}
+		           and (appflag = 20 or appflag = 40)
+		           and appsern = 1
+		           and substr(appfile,0,1)='W'
+	</select>
+</mapper>
