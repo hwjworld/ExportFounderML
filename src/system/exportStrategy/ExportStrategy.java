@@ -1,6 +1,5 @@
 package system.exportStrategy;
 
-import system.model.ArticleToken;
 
 /**
  * @author Administrator
