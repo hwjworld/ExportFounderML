@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.apache.ibatis.io.Resources;
 import org.dom4j.Document;
@@ -32,6 +33,9 @@ import com.founder.enp.dataportal.util.StringUtils;
 
 
 public class ExportHelper {
+
+	protected static Logger log = Logger.getLogger("ExportHelper");
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 	static Document moddoc=null; 
 	public static Document getModdoc() throws DocumentException, IOException
@@ -183,7 +187,10 @@ public class ExportHelper {
 		String outFolder = Config.getConfig().getConfigProperty("xml-save-path");		
 		StringBuilder sb = new StringBuilder();
 		sb.append(outFolder).append("/");
-		if(pubtime .equals("notime")){
+		if(org.apache.commons.lang.StringUtils.isBlank(pubtime)){
+			pubtime = "1970-01-01";
+		}
+		if(pubtime.equals("notime")){
 			sb.append(pubtime);
 		}else{
 			try {
@@ -235,6 +242,12 @@ public class ExportHelper {
 		addRelatedTitle(article, relatedNode.getLinktitle());
 	}
 	
+	/**
+	 * 将　　"~d~c~b~a"　反转，变成 "a~b~c~d"
+	 * 
+	 * @param hierarchy
+	 * @return
+	 */
 	public static String reverseHierarchy(String hierarchy){
 		if(StringUtils.isNull(hierarchy,true))
 			return null;
@@ -300,6 +313,11 @@ public class ExportHelper {
 	public static File copyFileToDir(String inputfile, String outputdir) {
 		File in = new File(inputfile);
 		File out = new File(outputdir+"/"+in.getName());
+		
+		if(!in.exists()){
+			log.info("inputfile is not exist: "+inputfile +", failed to copy");
+			return out;
+		}
 		try {
 			File parent = out.getParentFile();
 			if (!parent.exists()) {
