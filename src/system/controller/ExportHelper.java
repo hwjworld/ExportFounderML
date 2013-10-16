@@ -60,7 +60,7 @@ public class ExportHelper {
 	public static String article2Xml(Article article,Node node,Operation operation) throws IOException, DocumentException
 	{
 		Document doc = (Document) getModdoc().clone();
-		String outFolder = calcXMLPath(article);
+		String outFolder = article == null?calcXMLPath(node):calcXMLPath(article);
 		
 		Element root =doc.getRootElement();
 		
@@ -149,6 +149,7 @@ public class ExportHelper {
 			}
 			xmlfilename = outFolder  +  "/" +filename+".xml";
 		}
+
 		File out = FileUtils.createNewFile(xmlfilename);
 		
 		FileOutputStream fos = new FileOutputStream(out);
@@ -163,6 +164,17 @@ public class ExportHelper {
 		return xmlfilename; 
 	}
 	
+
+	public static String node2Xml(Node node,Operation operation) throws IOException, DocumentException
+	{
+		return article2Xml(null, node, operation);
+	}
+	
+	public static String calcXMLPath(Node node) {
+		String outFolder = calcXMLPath("node");
+		return outFolder;
+	}
+
 	private static void setElementValue(Element eleArt, String key,
 			int value) {
 		setElementValue(eleArt, key, String.valueOf(value));
@@ -182,15 +194,14 @@ public class ExportHelper {
 	
 
 	//分配一个xml文件路径
-	public static String calcXMLPath(String pubtime)
-	{
+	public static String calcXMLPath(String pubtime) {
 		String outFolder = Config.getConfig().getConfigProperty("xml-save-path");		
 		StringBuilder sb = new StringBuilder();
 		sb.append(outFolder).append("/");
 		if(org.apache.commons.lang.StringUtils.isBlank(pubtime)){
 			pubtime = "1970-01-01";
 		}
-		if(pubtime.equals("notime")){
+		if(pubtime.equals("notime") || pubtime.equals("node")){
 			sb.append(pubtime);
 		}else{
 			try {

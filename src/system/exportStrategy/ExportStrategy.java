@@ -1,13 +1,18 @@
 package system.exportStrategy;
 
+import system.model.StrategyToken;
+
 
 /**
  * @author Administrator
  * @version 1.0
  * @created 26-¾ÅÔÂ-2010 11:24:37
  */
-public interface ExportStrategy {
+public interface ExportStrategy<T extends StrategyToken> {
 
-	public void exportXML();
+	/**
+	 * export one XML file
+	 */
+	public void exportXML(T token);
 
 }

@@ -2,7 +2,9 @@ package system.controller;
 
 import org.dom4j.DocumentException;
 
+import system.exportStrategy.ExportStrategy;
 import system.exportStrategy.StrategyFactory;
+import system.exportWorker.ExportWorkManager;
 import system.repository.Config;
 
 public class Application {
@@ -21,8 +23,13 @@ public class Application {
 		// "sourceDB")));
 
 		// esProxy.exportXML();
-		StrategyFactory.getExportStrategy(
-				Config.getConfig().getConfigProperty("sourceDB")).exportXML();
+		ExportStrategy exportStrategy = StrategyFactory.getExportStrategy(
+				Config.getConfig().getConfigProperty("sourceDB"));
+		
+		ExportWorkManager worker = new ExportWorkManager(exportStrategy);
+		worker.startWork();
+//		exportStrategy.exportXML();
+		
 	}
 
 }
