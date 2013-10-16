@@ -33,7 +33,7 @@ select 0 as TargetNodeId, c.targetNode as targetNode
                  where siteid = (select siteid
                                    from wcmchannel
                                   where channelid =
-                                        replace((select docchannel
+                                        replaceresultType((select docchannel
                                            from wcmdocument
                                           where docid = #{docid} ),'-',''))) b) c,
        (select nvl2(docpuburl, '2', '3') as publishstate
@@ -45,23 +45,24 @@ select 0 as TargetNodeId, c.targetNode as targetNode
 	]]>
 	</select>
 	
-	<select id="selectNodePath" resultType="string">
+	<select id="selectNodePath" parameterType="nodeToken" resultMap="nodeMap">
 	<![CDATA[
-	select LTRIM(MAX(SYS_CONNECT_BY_PATH(nodename, '~'))
-                         KEEP(DENSE_RANK LAST ORDER BY rownum),
-                         ',') AS TargetNode
-              from typestruct
-             start with nodeid =#{nodeid}
-            connect by prior parentid = nodeid
-	]]>
-	</select>
-	
-	<select id="selectRelatedNode" parameterType="string" resultMap="relatedMap">
-	<![CDATA[
-	select *
-	from pagelayout
-	where articleid=#{articleid}
-	and masterid<>nodeid
+	select 0 as TargetNodeId, c.targetNode as targetNode
+	  from wcmchannel a,
+	       (select a.hiera || '~' || b.sitedesc as targetNode
+	          from (select LTRIM(MAX(SYS_CONNECT_BY_PATH(chnldesc, '~'))
+	                             KEEP(DENSE_RANK LAST ORDER BY rownum),
+	                             ',') AS hiera
+	                  from wcmchannel
+	                 start with channelid = #{channelid}
+	                connect by prior parentid = channelid) a,
+	               (select sitedesc
+	                  from wcmwebsite
+	                 where siteid = (select siteid
+	                                   from wcmchannel
+	                                  where channelid =#{channelid}
+	                                        )) b) c
+	 where channelid =#{channelid}
 	]]>
 	</select>
 	
@@ -97,4 +98,18 @@ select 1 as Action,1 as ArticleType,
        (select replace(docchannel,'-','') from wcmdocument where docid = #{docid})
        	</select>
 	
+	
+	<select id="selectNodeIDS" resultType="nodeToken">
+	<![CDATA[
+	select channelid from wcmchannel where doxml is null 
+	]]>
+	</select>
+	
+	<update id="setNodeDOXML" parameterType="nodeToken">
+	<![CDATA[
+		update wcmchannel
+		set doxml=1
+		where channelid=#{channelid}
+	]]>
+	</update>
 </mapper>

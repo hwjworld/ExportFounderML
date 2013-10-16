@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<typeAlias alias="filewebpathshape" type="system.model.FileWebPathShape" />
 		
 		<typeAlias alias="articleToken" type="TRSWCM.TrsArticleToken" />
+		<typeAlias alias="nodeToken" type="TRSWCM.TrsNodeToken" />
 	</typeAliases>
 
 	<environments default="exportXML">

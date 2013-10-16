@@ -15,19 +15,21 @@ import org.apache.ibatis.session.SqlSession;
 import system.controller.ExportHelper;
 import system.exportStrategy.AbstractExportStrategy;
 import system.model.Article;
+import system.model.ArticleToken;
 import system.model.Attachment;
 import system.model.Node;
+import system.model.NodeToken;
 import system.model.Operation;
 import system.model.RelatedNode;
 
-public class TRSWCM extends AbstractExportStrategy<TrsArticleToken> {
+public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken>  {
 	private TRSWCM_condition cond = new TRSWCM_condition("0", "0");
 	private static Properties props = null;
 	private final String trswcm_config = "TRSWCM.ecfg";
 
 	public TRSWCM() {
 		setWork_thread(5);
-		setWork_page(200);
+		setWork_page(500);
 	}
 
 	private Properties openConfig(){
@@ -62,9 +64,9 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken> {
 			IOUtils.closeQuietly(output);
 		}
 	}
-	@Override
-	public List<TrsArticleToken> getArticleTokens() {
-		List<TrsArticleToken> list = null;
+	
+	public List<ArticleToken> getArticleTokens() {
+		List<ArticleToken> list = null;
 		cond.setStart_docid(com.founder.enp.dataportal.util.StringUtils.getString(getConfigPropertie("start_docid"), "0"));
 		cond.setEnd_docid(com.founder.enp.dataportal.util.StringUtils.getString(getConfigPropertie("end_docid"),"0"));
 		System.out.printf("start_docid:%s   end_docid:%s  \n",cond.getStart_docid(),cond.getEnd_docid());
@@ -79,6 +81,8 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken> {
 		return list;
 	
 	}
+
+//	public List<TrsArticleToken> getArticleTokens() {}
 
 	@Override
 	public void startOneArticle(TrsArticleToken articleToken) {
@@ -180,7 +184,54 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken> {
 		} finally {
 			session.close();
 		}
-	}}
+	}
+
+	public List<NodeToken> getNodeTokens() {
+		List<NodeToken> list = null;
+		SqlSession session = sessionFactory.openSession();
+		try {
+			list = session.selectList("selectNodeIDS", null, new RowBounds(
+					0, work_page));
+			log.info("栏目一次查询，记录数 : "+list.size());
+		} finally {
+			session.close();
+		}
+		return list;
+	
+	}
+
+	@Override
+	public void startOneNode(TrsNodeToken nodeToken) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closeOneNode(TrsNodeToken nodeToken) {
+		SqlSession session = sessionFactory.openSession();
+		try {
+			session.update("setNodeDOXML", nodeToken);
+			session.commit();
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public Node getNodeInfo(TrsNodeToken nodeToken) {
+		Node node = null;
+		SqlSession session = sessionFactory.openSession();
+		try {
+			node = (Node) session.selectOne("selectNodePath", nodeToken);
+			node.setTargetNode(ExportHelper.reverseHierarchy(node
+					.getTargetNode()));
+		} finally {
+			session.close();
+		}
+		return node;
+	}
+
+	}
 
 
 class TRSWCM_condition {
