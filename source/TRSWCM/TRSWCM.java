@@ -28,8 +28,6 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken
 	private final String trswcm_config = "TRSWCM.ecfg";
 
 	public TRSWCM() {
-		setWork_thread(5);
-		setWork_page(500);
 	}
 
 	private Properties openConfig(){

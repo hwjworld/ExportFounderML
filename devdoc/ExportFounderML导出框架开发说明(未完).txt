@@ -1,5 +1,7 @@
+
 此框架用以生成FounderML文件，配合ImportDB可用于数据迁移。
-实现了数据库，生成XML等公共部分相应逻辑，只需实现针对不同系统的 取得稿件，附件，正文，标题图片等部分便可导出可供入库的xml。
+实现了数据库，生成XML等公共部分相应逻辑，只需实现针对不同系统的进行相应开发，实现如下功能的代码。
+栏目树, 稿件，附件，正文，标题图片等部分便可导出可供入库的xml。
 数据库层使用mybatis3.0框架实现。
 
 src为框架原代码
@@ -8,14 +10,15 @@ ExportFounderML为导出程序目录
 可将实现后的系统已jar插件形式置于ExportFounderML\SourceSys
 
 以下为开发步骤:
-1.确定数据来源系统名称（英文），如XYCMS。（翔宇cms)
+1.确定数据来源系统名称（英文），如TRSWCM。
+2.建立两种类型的token（确定某栏目或某稿件的唯一标识，通常为id）, 
+　供输出稿件用的ArticleToken,
+　供输出栏目用的NodeToken,
+  建立两个类实现这两个栏目,如TrsArticleToken implement ArticleToken,TrsNodeToken implement NodeToken
+  Ｔoken类里定义id即可表示一篇稿件，若有多个字段标识一篇稿件（如可能需要articleid与nodeid），则建立多个变量。
+3.以TRSWCM为包名，同时创建TRSWCM.java，继承system.exportStrategy.AbstractExportStrategy<TrsArticleToken, TrsNodeToken>类
 
-2.以XYCMS为包名，同时创建XYCMS.java，继承system.exportStrategy.AbstractExportStrategy类
-
-3.建立相应token类，一个token标识一篇稿件，也即一个xml。
-	如XYCMSArticleToken.java，类里定义articleid即可表示一篇稿件，若有多个字段标识一篇稿件（如可能需要articleid与nodeid），则建立多个变量。
-
-4.a.若使用数据库，在XYCMS/dao下建立mybatis使用的相应配置言论的（参看xycms和xinhuanetCMS）
+4.a.若使用数据库，在TRSWCM/dao下建立mybatis使用的相应配置言论的（参看xycms或trswcm）
 4.b.若不使用数据库，则自己实现相应过程，（参看dxcnml实现）
 
 
@@ -24,15 +27,11 @@ ExportFounderML为导出程序目录
 　　<properties resource="TRSWCM/dao/config.properties" />
 　　<typeAlias alias="articleToken" type="TRSWCM.TrsArticleToken" />
 	<mappers>
-		<mapper resource="XinhuanetCMS/dao/ArticleMapper.xml" />
-		<mapper resource="XinhuanetCMS/dao/NodeMapper.xml" />
-		<mapper resource="XinhuanetCMS/dao/AttachmentMapper.xml" />
+		<mapper resource="TRSWCM/dao/ArticleMapper.xml" />
+		<mapper resource="TRSWCM/dao/NodeMapper.xml" />
+		<mapper resource="TRSWCM/dao/AttachmentMapper.xml" />
 	</mappers>
 	
-	设置一次取得的稿件数,在构造方法中实现
-	setWork_page()
-	设置工作线程数，在构造方法中实现
-	setWork_thread(2);
 	
 6.
 	

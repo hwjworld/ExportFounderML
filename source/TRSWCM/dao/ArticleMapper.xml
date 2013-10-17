@@ -49,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	]]>
 	</if>
 	<![CDATA[
-	and doxml is null and rownum<500
+	and doxml =0 and rownum<2000
 	]]>
 	</select>
 

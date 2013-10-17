@@ -136,28 +136,5 @@ public abstract class AbstractExportStrategy<T extends ArticleToken,N extends No
 	public abstract void closeOneNode(N nodeToken);
 	public abstract Node getNodeInfo(N nodeToken);
 	
-	protected void pause(){
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public int getWork_thread() {
-		return work_thread;
-	}
-
-	public void setWork_thread(int work_thread) {
-		this.work_thread = work_thread;
-	}
-
-	public int getWork_page() {
-		return work_page;
-	}
-
-	public void setWork_page(int work_page) {
-		this.work_page = work_page;
-	}
 
 }

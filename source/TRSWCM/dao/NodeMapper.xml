@@ -33,7 +33,7 @@ select 0 as TargetNodeId, c.targetNode as targetNode
                  where siteid = (select siteid
                                    from wcmchannel
                                   where channelid =
-                                        replaceresultType((select docchannel
+                                        replace((select docchannel
                                            from wcmdocument
                                           where docid = #{docid} ),'-',''))) b) c,
        (select nvl2(docpuburl, '2', '3') as publishstate

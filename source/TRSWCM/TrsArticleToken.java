@@ -17,4 +17,9 @@ public class TrsArticleToken implements ArticleToken {
 	public String toString() {
 		return "Docid="+docid;
 	}
+
+	public String getID() {
+		return docid;
+	}
+	
 }

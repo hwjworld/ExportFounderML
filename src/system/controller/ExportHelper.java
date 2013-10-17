@@ -144,7 +144,7 @@ public class ExportHelper {
 			Element eleArt = root.element("Article");
 			eleArt.clearContent();
 			String filename = String.valueOf(node.getTargetNodeId());
-			if(StringUtils.isNull(filename,true)){
+			if(StringUtils.isNull(filename,true) || filename.trim().equals("0")){
 				filename = node.getTargetNode().hashCode()+"";
 			}
 			xmlfilename = outFolder  +  "/" +filename+".xml";

@@ -13,6 +13,7 @@ public class ExportRunner implements Runnable{
 	}
 	public void run() {
 		strategy.exportXML(token);
+		ExportWorkManager.removeFromWrokintToken(token.getID());
 	}
 
 }
