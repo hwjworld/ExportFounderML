@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.apache.ibatis.io.Resources;
 import org.dom4j.Document;
@@ -32,6 +33,9 @@ import com.founder.enp.dataportal.util.StringUtils;
 
 
 public class ExportHelper {
+
+	protected static Logger log = Logger.getLogger("ExportHelper");
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 	static Document moddoc=null; 
 	public static Document getModdoc() throws DocumentException, IOException
@@ -56,7 +60,7 @@ public class ExportHelper {
 	public static String article2Xml(Article article,Node node,Operation operation) throws IOException, DocumentException
 	{
 		Document doc = (Document) getModdoc().clone();
-		String outFolder = calcXMLPath(article);
+		String outFolder = article == null?calcXMLPath(node):calcXMLPath(article);
 		
 		Element root =doc.getRootElement();
 		
@@ -140,11 +144,12 @@ public class ExportHelper {
 			Element eleArt = root.element("Article");
 			eleArt.clearContent();
 			String filename = String.valueOf(node.getTargetNodeId());
-			if(StringUtils.isNull(filename,true)){
+			if(StringUtils.isNull(filename,true) || filename.trim().equals("0")){
 				filename = node.getTargetNode().hashCode()+"";
 			}
 			xmlfilename = outFolder  +  "/" +filename+".xml";
 		}
+
 		File out = FileUtils.createNewFile(xmlfilename);
 		
 		FileOutputStream fos = new FileOutputStream(out);
@@ -159,6 +164,17 @@ public class ExportHelper {
 		return xmlfilename; 
 	}
 	
+
+	public static String node2Xml(Node node,Operation operation) throws IOException, DocumentException
+	{
+		return article2Xml(null, node, operation);
+	}
+	
+	public static String calcXMLPath(Node node) {
+		String outFolder = calcXMLPath("node");
+		return outFolder;
+	}
+
 	private static void setElementValue(Element eleArt, String key,
 			int value) {
 		setElementValue(eleArt, key, String.valueOf(value));
@@ -178,12 +194,14 @@ public class ExportHelper {
 	
 
 	//分配一个xml文件路径
-	public static String calcXMLPath(String pubtime)
-	{
+	public static String calcXMLPath(String pubtime) {
 		String outFolder = Config.getConfig().getConfigProperty("xml-save-path");		
 		StringBuilder sb = new StringBuilder();
 		sb.append(outFolder).append("/");
-		if(pubtime .equals("notime")){
+		if(org.apache.commons.lang.StringUtils.isBlank(pubtime)){
+			pubtime = "1970-01-01";
+		}
+		if(pubtime.equals("notime") || pubtime.equals("node")){
 			sb.append(pubtime);
 		}else{
 			try {
@@ -235,6 +253,12 @@ public class ExportHelper {
 		addRelatedTitle(article, relatedNode.getLinktitle());
 	}
 	
+	/**
+	 * 将　　"~d~c~b~a"　反转，变成 "a~b~c~d"
+	 * 
+	 * @param hierarchy
+	 * @return
+	 */
 	public static String reverseHierarchy(String hierarchy){
 		if(StringUtils.isNull(hierarchy,true))
 			return null;
@@ -300,6 +324,11 @@ public class ExportHelper {
 	public static File copyFileToDir(String inputfile, String outputdir) {
 		File in = new File(inputfile);
 		File out = new File(outputdir+"/"+in.getName());
+		
+		if(!in.exists()){
+			log.info("inputfile is not exist: "+inputfile +", failed to copy");
+			return out;
+		}
 		try {
 			File parent = out.getParentFile();
 			if (!parent.exists()) {

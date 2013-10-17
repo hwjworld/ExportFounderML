@@ -4,11 +4,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.founder.exportFounderML.attachmentMapper">
 	<resultMap id="attachmentMap" type="attachment">
-		<result property="attname" column="attpath" />
+		<result property="attname" column="appfile" />
 		<result property="type" column="type" />
-		<association property="attdesc" column="attid" javaType="string"
-			select="selectAttDesc" />
-		<association property="fileshape" column="attid" javaType="filepathshape"
+		<result property="attdesc" column="appdesc" />
+		<association property="fileshape" column="appendixid" javaType="filepathshape"
 			select="selectAttachmentShape" />
 	</resultMap>
 
@@ -21,36 +20,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectAttachmentIDS" parameterType="articleToken"
 		resultType="string">
-	<![CDATA[
-	select att.attid 
-	from attachement att,articleatt artatt 
-	where att.attid=artatt.attid 
-	and artatt.articleid=#{articleid}
+	<![CDATA[	
+	SELECT appendixid FROM WCMAPPENDIX where appdocid=#{docid}
 	]]>
 	</select>
 	
 	<select id="selectAttachment" parameterType="string"
 		resultMap="attachmentMap">
 	<![CDATA[
-	select *
-	from attachement
-	where attid=#{attid}
+	 select a.*,1 as type from wcmappendix a where appendixid=#{attid}
 	]]>
 	</select>
 	<select id="selectAttachmentShape" parameterType="string"
 		resultType="filepathshape">
 	<![CDATA[
-	select attpath as path
-	from attachement 
-	where attid=#{attid}
-	]]>
-	</select>
-	<select id="selectAttDesc" parameterType="string" resultType="string">
-	<![CDATA[
-	select description as attdesc
-	from articleatt
-	where attid=#{attid}
-	and rownum=1
+	select appfile as path
+	from WCMAPPENDIX 
+	where appendixid=#{appendixid}
 	]]>
 	</select>
 	<select id="selectPiclinkShape" parameterType="string"
@@ -62,12 +48,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<select id="selectPiclink" parameterType="articleToken"
 		resultMap="piclinkMap">
-	<![CDATA[
-	select piclinks as attpath,
-	1 as type,
-	piclinks as piclinkpath 
-	from releaselib
-	where articleid=#{articleid}
-	]]>
+			select appfile as attpath,1 as type,appfile as piclinkpath
+		          from wcmappendix
+		         where appdocid =#{docid}
+		           and (appflag = 20 or appflag = 40)
+		           and appsern = 1
+		           and substr(appfile,0,1)='W'
 	</select>
 </mapper>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="source"/>
+	<classpathentry excluding="DXCNML/|XinhuanetCMS/|XYCMS/" kind="src" path="source"/>
+	<classpathentry kind="src" path="ExportFounderML/conf"/>
+	<classpathentry excluding="system/exportStrategy/AbstractExportArticleStrategy.java|system/exportStrategy/AbstractExportNodeStrategy.java" kind="src" path="src"/>
 	<classpathentry kind="lib" path="ExportFounderML/lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="ExportFounderML/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="ExportFounderML/lib/datainterface.jar" sourcepath="/ImportDB"/>
@@ -12,6 +14,6 @@
 	<classpathentry kind="lib" path="ExportFounderML/lib/cnml-ex-api-1.3b_sun_sdk142-0910.jar"/>
 	<classpathentry kind="lib" path="ExportFounderML/lib/jaxen-1.1-beta-9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="ExportFounderML/lib/expfounderml.jar"/>
+	<classpathentry kind="lib" path="ExportFounderML/lib/expfounderml.jar" sourcepath="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -4,17 +4,19 @@
 		翔宇:XYCMS
 		新华网:XinhuanetCMS
 		鼎翔cnmlxml:DXCNML
-		黑龙江日报北方网:HLJEnorth-->
-		<sourceDB>XYCMS</sourceDB>
+		黑龙江日报北方网:HLJEnorth
+		民进中央TRS库:TRSWCM
+		-->
+		<sourceDB>TRSWCM</sourceDB>
 		
 		<!-- 配置为0则不设置目标站点id,将通过入库程序指定 -->
 		<dest-siteid>0</dest-siteid>
 		
 		<!-- 附件根路径  -->
-		<att-src-path>/program/work/all_test_dir/founderexport/dxcnml</att-src-path>
+		<att-src-path>/d/work/minjin/trs/webpic</att-src-path>
 		
 		<!-- xml存储目标路径 -->
-		<xml-save-path>/program/work/all_test_dir/founderexport/xmlsave/</xml-save-path>
+		<xml-save-path>/d/work/minjin/xmlsave</xml-save-path>
 		
 		<!-- 需要处理附件类型
 		gif|jpg|jpeg|jpe|png|rar|doc|zip|exe|mid|midi|rm|rpm|wav|dot|xls|mp3|avi|mpg|mpeg|ppt|swf|mov|mp4|asf|wmv|flv	-->

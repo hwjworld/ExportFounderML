@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.founder.exportFounderML.articleMapper">
+
+	<!-- 先用content记录contentid,再次查询,没有linktitle,jabbarmark -->
+	<resultMap id="articleMap" type="article">
+		<result property="DocID" column="docid" />
+		<result property="Title" column="doctitle" />
+<!-- 		<result property="Content" column="doccontent" /> -->
+		<result property="Content" column="dochtmlcon" />
+		<result property="Abstract" column="docabstract" />
+		<result property="keyword" column="dockeywords" />
+		<result property="Author" column="docauthor" />
+		<result property="Editor" column="doceditor" />
+		<result property="Liability" column="docauditor" />
+		<result property="Nsdate" column="crtime" />
+<!-- 		<result property="Nsdate" column="docpubtime" /> -->
+		<result property="WordCount" column="docwordscount" />
+		<result property="Subtitle" column="subdoctitle" />
+<!-- 		<result property="Source" column="docsourcename" /> -->
+		<result property="Source" column="laiyuan" />
+		
+		
+<!-- 		<result property="Attr" column="attr" /> -->
+<!-- 		<result property="Importance" column="importance" /> -->
+<!-- 		<result property="Introtitle" column="introtitle" /> -->
+<!-- 		<result property="Multiattach" column="multiattach" /> -->
+<!-- 		<result property="piccount" column="piccount" /> -->
+<!-- 		<result property="piclink" column="piclinks" /> -->
+<!-- 		<result property="SourceUrl" column="sourceurl" /> -->
+<!-- 		<result property="Url" column="url" /> -->
+<!-- 		<result property="DisplayOrder" column="DisplayOrder" /> -->
+	</resultMap>
+
+	<select id="selectArticleIDS" parameterType="TRSWCM.TRSWCM_condition" resultType="articleToken">
+	
+	select docid from wcmdocument where 1=1 
+	
+	<if test="start_docid != 0">
+	<![CDATA[
+		and docid>=#{start_docid}
+	]]>
+	</if>
+	<if test="end_docid != 0">
+	<![CDATA[
+		and docid<=#{end_docid}
+	]]>
+	</if>
+	<![CDATA[
+	and doxml =0 and rownum<2000
+	]]>
+	</select>
+
+	<select id="selectArticleInfo" parameterType="articleToken" resultMap="articleMap">
+	<![CDATA[
+	select * from wcmdocument where docid=#{docid} 
+	]]>
+	</select>
+	
+	<select id="getArticleClobContent" parameterType="string" resultType="string">
+	<![CDATA[
+	select content from clobcontent where contentid=#{contentid}
+	]]>
+	</select>
+	
+	<select id="getArticleContentstr" parameterType="articleToken" resultType="string">
+	<![CDATA[
+	select contentstr from pagelayout where articleid=#{articleid} and nodeid=#{nodeid}
+	]]>
+	</select>
+	
+	
+	<update id="setDOXML" parameterType="articleToken">
+	<![CDATA[
+		update wcmdocument
+		set doxml=1
+		where docid=#{docid}
+	]]>
+	</update>
+</mapper>
