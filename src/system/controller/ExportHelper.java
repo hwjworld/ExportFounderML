@@ -35,6 +35,7 @@ import com.founder.enp.dataportal.util.StringUtils;
 public class ExportHelper {
 
 	protected static Logger log = Logger.getLogger("ExportHelper");
+	public static int count = 0;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 	static Document moddoc=null; 
@@ -160,7 +161,7 @@ public class ExportHelper {
         writer.write(doc);
         writer.close();
         fos.close();
-		System.out.println("Ð´XML:  "+xmlfilename);
+		System.out.println("Ð´µÚ["+ ++count +"]¸öXML:  "+xmlfilename);
 		return xmlfilename; 
 	}
 	

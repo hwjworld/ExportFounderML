@@ -22,8 +22,7 @@ public abstract class AbstractExportStrategy<T extends ArticleToken,N extends No
 
 	protected static SqlSessionFactory sessionFactory = DaoConfig.getSessionFactory();
 	protected static Logger log = Logger.getLogger("ExportStrategy");
-	private int work_thread = 1;
-	protected int work_page = 1000000;
+	protected int work_page = 10000;
 	
 	@SuppressWarnings("unchecked")
 	public void exportXML(StrategyToken token) {
@@ -46,24 +45,24 @@ public abstract class AbstractExportStrategy<T extends ArticleToken,N extends No
 			System.out.printf("an error article : %s  status: article=%s ,nodeid=%s ,operation=%s\n",articleToken,article,node,operation);
 			return;
 		}
+		if(article != null){
+			setAttachments(article, articleToken);
+			setPiclink(article, articleToken);
+			setRelatedNode(article, articleToken);
+		}
+		closeOneArticle(articleToken);	
 		try {
-			if(article != null){
-				setAttachments(article, articleToken);
-				setPiclink(article, articleToken);
-				setRelatedNode(article, articleToken);
-			}
 			ExportHelper.article2Xml(article, node, operation);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		closeOneArticle(articleToken);	
 	}
 	
 
 	private void setAttachments(Article article,T articleToken){
-		List<Attachment> atts = getArticleAttachments(articleToken);
+		List<Attachment> atts = getArticleAttachments(article, articleToken);
 		if(atts == null)
 			return;
 		for(Attachment att:atts){
@@ -101,7 +100,7 @@ public abstract class AbstractExportStrategy<T extends ArticleToken,N extends No
 	public abstract Article getArticleInfo(T articleToken);
 	public abstract Node getNodeInfo(T articleToken);
 	public abstract Operation getOperationInfo(T articleToken);
-	public abstract List<Attachment> getArticleAttachments(T articleToken);
+	public abstract List<Attachment> getArticleAttachments(Article article, T articleToken);
 	public abstract Attachment getArticlePiclink(T articleToken);
 	public abstract List<RelatedNode> getArticleRelatedNode(T articleToken);
 

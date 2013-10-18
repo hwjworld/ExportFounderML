@@ -17,7 +17,7 @@ import system.model.StrategyToken;
 public class ExportWorkManager {
 
 	private static ExportStrategy<StrategyToken> strategy = null;
-	private static ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100,
+	private static ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 50,
 			1000 * 60, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100000),
 			new ThreadPoolExecutor.CallerRunsPolicy());
 	public ExportWorkManager(ExportStrategy<StrategyToken> strategy) {
@@ -26,7 +26,7 @@ public class ExportWorkManager {
 	/**
 	 * 已经交给导出线程的token
 	 */
-	private static final HashMap<String, Boolean> workingToken = new HashMap<String, Boolean>();
+	private static final HashMap<String, Boolean> workedToken = new HashMap<String, Boolean>();
 	private static int count = 0;
 	
 	public void startWork() {
@@ -51,33 +51,31 @@ public class ExportWorkManager {
 				pause(60);
 				
 			}
-			Iterator<StrategyToken> it = tokens.iterator();
-			while(it.hasNext()){
-				StrategyToken token = it.next();
+			for (StrategyToken token : tokens) {
 				if(addToWorkingToken(token.getID())){
-					count++;
-					
 					executor.execute(new ExportRunner(strategy, token));
-					System.out.println("count: "+count);
-				}else{
-					tokens.clear();
-					it = tokens.iterator();
+					System.out.println("读取第[ "+ ++count +" ]个任务");
 				}
 			}
+
+			tokens.clear();
+			pause(5);
 		}
 		
 	}
 	
+	public static boolean containInWorkedToken(String token){
+		return workedToken.containsKey(token);
+	}
 	public static boolean addToWorkingToken(String token){
-		if(workingToken.containsKey(token)){
-			pause(2);
+		if(workedToken.containsKey(token)){
 			return false;
 		}
-		workingToken.put(token, true);
+		workedToken.put(token, true);
 		return true;
 	}
 	public static void removeFromWrokintToken(String token){
-		workingToken.remove(token);
+		workedToken.remove(token);
 	}
 	
 
