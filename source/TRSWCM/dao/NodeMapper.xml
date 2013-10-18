@@ -101,7 +101,7 @@ select 1 as Action,1 as ArticleType,
 	
 	<select id="selectNodeIDS" resultType="nodeToken">
 	<![CDATA[
-	select channelid from wcmchannel where doxml is null 
+	select channelid from wcmchannel where doxml=0 or doxml is null
 	]]>
 	</select>
 	

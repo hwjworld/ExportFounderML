@@ -3,6 +3,7 @@ package TRSWCM;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -17,10 +18,13 @@ import system.exportStrategy.AbstractExportStrategy;
 import system.model.Article;
 import system.model.ArticleToken;
 import system.model.Attachment;
+import system.model.FilePathShape;
 import system.model.Node;
 import system.model.NodeToken;
 import system.model.Operation;
 import system.model.RelatedNode;
+import system.repository.Config;
+import system.util.Utils;
 
 public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken>  {
 	private TRSWCM_condition cond = new TRSWCM_condition("0", "0");
@@ -67,7 +71,8 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken
 		List<ArticleToken> list = null;
 		cond.setStart_docid(com.founder.enp.dataportal.util.StringUtils.getString(getConfigPropertie("start_docid"), "0"));
 		cond.setEnd_docid(com.founder.enp.dataportal.util.StringUtils.getString(getConfigPropertie("end_docid"),"0"));
-		System.out.printf("start_docid:%s   end_docid:%s  \n",cond.getStart_docid(),cond.getEnd_docid());
+		cond.setDocid(com.founder.enp.dataportal.util.StringUtils.getString(getConfigPropertie("docid"),"0"));
+		System.out.printf(" docid:%s  start_docid:%s   end_docid:%s  \n",cond.getDocid(),cond.getStart_docid(),cond.getEnd_docid());
 		SqlSession session = sessionFactory.openSession();
 		try {
 			list = session.selectList("selectArticleIDS", cond, new RowBounds(
@@ -131,7 +136,7 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken
 	}
 
 	@Override
-	public List<Attachment> getArticleAttachments(TrsArticleToken articleToken) {
+	public List<Attachment> getArticleAttachments(Article article, TrsArticleToken articleToken) {
 		SqlSession session = sessionFactory.openSession();
 		List<Attachment> attachmentList = new ArrayList<Attachment>();
 		try {
@@ -148,6 +153,27 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken
 		} finally {
 			session.close();
 		}
+		
+
+		String content = article.getContent();
+
+		List<String> imglist = Utils.getListFromMatchedPattern(" src=\"([^\"]+)\"", content);
+		for (Iterator<String> it = imglist.iterator(); it.hasNext();) {
+			String img = it.next();			
+			if(Utils.endWith(img,Config.getConfig().getConfigProperty("attachment-type").split("\\|"))){
+				if(img.startsWith("W0")) {
+					Attachment att = new Attachment();
+					att.setAttdesc(img);
+					att.setAttname(img);
+					FilePathShape shape = new FilePathShape();
+					shape.setpath(StringUtils.substring(img, 0, 8)+"/"+StringUtils.substring(img, 0, 10)+"/"+img);
+					att.setFileshape(shape);
+					att.setType(1);
+					attachmentList.add(att);
+				}
+			}
+			
+		}		
 		return attachmentList;
 	}
 
@@ -228,6 +254,7 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken
 		}
 		return node;
 	}
+	
 
 	}
 
@@ -235,6 +262,15 @@ public class TRSWCM extends AbstractExportStrategy<TrsArticleToken, TrsNodeToken
 class TRSWCM_condition {
 	public String start_docid = "0";
 	public String end_docid = "0";
+	public String docid = "0";
+
+	public String getDocid() {
+		return docid;
+	}
+
+	public void setDocid(String docid) {
+		this.docid = docid;
+	}
 
 	public TRSWCM_condition(String start_docid,String end_docid) {
 		this.start_docid = start_docid;

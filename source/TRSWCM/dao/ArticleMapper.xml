@@ -35,22 +35,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 
 	<select id="selectArticleIDS" parameterType="TRSWCM.TRSWCM_condition" resultType="articleToken">
-	
-	select docid from wcmdocument where 1=1 
-	
-	<if test="start_docid != 0">
 	<![CDATA[
-		and docid>=#{start_docid}
-	]]>
-	</if>
+	select docid from wcmdocument where doxml =0 and rownum<500
+	]]>	
 	<if test="end_docid != 0">
 	<![CDATA[
 		and docid<=#{end_docid}
 	]]>
 	</if>
+	<if test="start_docid != 0">
 	<![CDATA[
-	and doxml =0 and rownum<2000
+		and docid>=#{start_docid}
 	]]>
+	</if>
+	<if test="docid != 0">
+	<![CDATA[
+		and docid=#{docid}
+	]]>
+	</if>
 	</select>
 
 	<select id="selectArticleInfo" parameterType="articleToken" resultMap="articleMap">
