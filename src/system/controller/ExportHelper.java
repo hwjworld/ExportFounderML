@@ -126,7 +126,8 @@ public class ExportHelper {
 			if(!StringUtils.isNull(article.getpiclink().getFileshape().getpath(),true)){
 				Element eleFile = eleFileModule.createCopy();
 				Attachment att = article.getpiclink();
-				att.setAttname("THIS IS PICLINK REF");
+				att.setAttdesc("THIS IS PICLINK REF");
+//				att.setAttname(article.getpiclink().getFileshape().getpath());
 				eleAttach.add(getAttachmentElement(eleFile,att,article.getNsdate()));
 			}
 			

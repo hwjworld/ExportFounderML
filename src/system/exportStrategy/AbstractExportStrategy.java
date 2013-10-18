@@ -118,6 +118,7 @@ public abstract class AbstractExportStrategy<T extends ArticleToken,N extends No
 		Operation operation = new Operation();
 		operation.setAction(1);
 		operation.setObjectType(0);
+		operation.setTargetLib(2);
 		if(operation == null ||  node==null){
 			System.out.printf("an error node : %s  status: nodeid=%s ,operation=%s\n",nodeToken,node,operation);
 			return;
